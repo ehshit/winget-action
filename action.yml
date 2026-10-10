@@ -1,0 +1,42 @@
+name: "Submit to WinGet"
+description: "WinGet automation for you if you wanted"
+author: "ehuh"
+branding:
+  icon: "package"
+  color: "blue"
+
+inputs:
+  package-id:
+    description: "winget package identifier (e.g. Eh.clipboard)"
+    required: true
+  asset-pattern:
+    description: "Regex matched against release asset filenames (e.g. 'EhClipboardSetup\\.exe$')"
+    required: true
+  fork-owner:
+    description: "GitHub user/org that owns the winget-pkgs fork"
+    required: true
+  token:
+    description: "PAT with repo scope"
+    required: true
+  version:
+    description: "Override version (auto-detects from release's tag if empty)"
+    required: false
+    default: ""
+  repository:
+    description: "owner/repo to publish from (defaults to the calling repository)"
+    required: false
+    default: ""
+  komac-version:
+    description: "komac release version (without leading v)"
+    required: false
+    default: "2.13.0"
+
+outputs:
+  pr:
+    description: "Number of the opened winget-pkgs pull request"
+  version:
+    description: "Resolved package version (without leading v)"
+
+runs:
+  using: "node20"
+  main: "dist/index.js"
