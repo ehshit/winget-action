@@ -30,7 +30,7 @@ jobs:
 Setup:
 
 1. have a fork of [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs), if not fork it
-2. Make a PAT with `repo` scope, then save it as a secret
+2. Make a PAT with `repo` + `workflow` scope, then save it as a secret
 3. Pass variable to action!
 
 ## Inputs
@@ -40,7 +40,7 @@ Setup:
 | `package-id` | yes | | winget package identifier, e.g. `Eh.clipboard` |
 | `asset-pattern` | yes | | regex matched against release asset filenames |
 | `fork-owner` | yes | | GitHub user/org owning the `winget-pkgs` fork |
-| `token` | yes | | PAT with repo scope (fork push + PR) |
+| `token` | yes | | PAT with `repo` + `workflow` scope (fork push + PR) |
 | `version` | no | release tag | override version |
 | `repository` | no | calling repo | `owner/repo` to publish from |
 | `komac-version` | no | `2.13.0` | komac version (no leading `v`) |
