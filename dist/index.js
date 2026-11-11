@@ -32592,6 +32592,8 @@ async function run() {
         downloadUrl,
         "--version",
         version,
+        "--exit",
+        "--skip-pr-check",
         "--output",
         manifestDir,
     ], {

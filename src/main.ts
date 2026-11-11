@@ -89,6 +89,8 @@ async function run(): Promise<void> {
       downloadUrl,
       "--version",
       version,
+      "--exit",
+      "--skip-pr-check",
       "--output",
       manifestDir,
     ],
