@@ -175,6 +175,22 @@ async function run(): Promise<void> {
   const branchName = `winget-${packageId}-${version}`;
   await exec("git", ["checkout", "-b", branchName], { cwd: cloneDir });
 
+  core.info("Configuring git identity for the runner");
+  await exec(
+    "git",
+    ["config", "user.name", "github-actions[bot]"],
+    { cwd: cloneDir }
+  );
+  await exec(
+    "git",
+    [
+      "config",
+      "user.email",
+      "41898282+github-actions[bot]@users.noreply.github.com",
+    ],
+    { cwd: cloneDir }
+  );
+
   function copyDir(src: string, dest: string): void {
     fs.mkdirSync(dest, { recursive: true });
     for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
