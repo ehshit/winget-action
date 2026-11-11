@@ -229,7 +229,7 @@ async function run(): Promise<void> {
   const workflowUrl = `${github.context.serverUrl}/${ctxOwner}/${ctxRepo}/actions/runs/${github.context.runId}`;
   const releaseUrl = `${github.context.serverUrl}/${fullRepo}/releases/tag/${tag}`;
   const body = [
-    `# Automated with [winget-action](${ACTION_URL}) v${actionVersion} with komac ${komacVersion}`,
+    `# Automated with [winget-action](${ACTION_URL}) ${actionVersion} with komac ${komacVersion}`,
     ``,
     `Ran from this [Workflow](${workflowUrl}) via the [new release](${releaseUrl})`,
   ].join("\n");
