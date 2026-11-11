@@ -32618,6 +32618,45 @@ async function run() {
         throw new Error(`komac produced no yaml files in ${manifestDir}`);
     }
     core.info(`Generated ${yamlFiles.length} manifest file(s)`);
+    const forkRepo = `${forkOwner}/winget-pkgs`;
+    core.info(`Preparing the fork ${forkRepo}`);
+    try {
+        const { data: sync } = await octokit.rest.repos.mergeUpstream({
+            owner: forkOwner,
+            repo: "winget-pkgs",
+            branch: "master",
+        });
+        core.info(`Fork sync: ${sync.message}`);
+    }
+    catch (err) {
+        const status = err.status;
+        if (status === 404) {
+            core.info(`Fork ${forkRepo} not found, creating it`);
+            await octokit.rest.repos.createFork({
+                owner: "microsoft",
+                repo: "winget-pkgs",
+                name: "winget-pkgs",
+            });
+            for (let i = 0;; i++) {
+                try {
+                    await octokit.rest.repos.get({ owner: forkOwner, repo: "winget-pkgs" });
+                    core.info("Fork is ready");
+                    break;
+                }
+                catch {
+                    if (i >= 30) {
+                        throw new Error(`Fork ${forkRepo} did not appear in time`);
+                    }
+                    core.info("Waiting for the fork to be created...");
+                    await new Promise((r) => setTimeout(r, 2000));
+                }
+            }
+            await new Promise((r) => setTimeout(r, 5000));
+        }
+        else {
+            core.warning(`Could not sync ${forkRepo} (status ${status ?? "unknown"}), pushing anyway`);
+        }
+    }
     core.info(`Cloning winget-pkgs and preparing branch`);
     const cloneDir = path.join(workDir, "winget-pkgs");
     await (0, exec_1.exec)("git", [
@@ -32647,13 +32686,18 @@ async function run() {
     copyDir(manifestDir, cloneDir);
     await (0, exec_1.exec)("git", ["add", "-A"], { cwd: cloneDir });
     await (0, exec_1.exec)("git", ["commit", "-m", `Update ${packageId} to ${version}`], { cwd: cloneDir });
-    await (0, exec_1.exec)("git", ["push", "origin", branchName], {
+    core.info(`Pushing ${branchName} to ${forkOwner}`);
+    const forkPushUrl = `https://x-access-token:${token}@github.com/${forkRepo}.git`;
+    const pushExit = await (0, exec_1.exec)("git", ["push", forkPushUrl, branchName], {
         cwd: cloneDir,
-        env: {
-            ...process.env,
-            GITHUB_TOKEN: token,
-        },
+        ignoreReturnCode: true,
     });
+    if (pushExit !== 0) {
+        core.info(`Push rejected (branch ${branchName} is probably out of date on the fork), force-pushing the refreshed branch`);
+        await (0, exec_1.exec)("git", ["push", "--force", forkPushUrl, branchName], {
+            cwd: cloneDir,
+        });
+    }
     const workflowUrl = `${github.context.serverUrl}/${ctxOwner}/${ctxRepo}/actions/runs/${github.context.runId}`;
     const releaseUrl = `${github.context.serverUrl}/${fullRepo}/releases/tag/${tag}`;
     const body = [
