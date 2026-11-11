@@ -28,7 +28,7 @@ async function run(): Promise<void> {
   const token = core.getInput("token", { required: true });
   const versionOverride = core.getInput("version");
   const repoInput = core.getInput("repository");
-  const komacVersion = core.getInput("komac-version") || "2.13.0";
+  const komacVersion = core.getInput("komac-version") || "2.17.2";
   const actionVersion = process.env.GITHUB_ACTION_REF || "unknown";
 
   core.setSecret(token);

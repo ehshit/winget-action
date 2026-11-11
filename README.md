@@ -43,7 +43,7 @@ Setup:
 | `token` | yes | | PAT with `repo` + `workflow` scope (fork push + PR) |
 | `version` | no | release tag | override version |
 | `repository` | no | calling repo | `owner/repo` to publish from |
-| `komac-version` | no | `2.13.0` | komac version (no leading `v`) |
+| `komac-version` | no | `2.17.2` | komac version (no leading `v`) |
 
 ## Outputs
 

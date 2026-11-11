@@ -29,7 +29,7 @@ inputs:
   komac-version:
     description: "komac release version (without leading v)"
     required: false
-    default: "2.13.0"
+    default: "2.17.2"
 
 outputs:
   pr:

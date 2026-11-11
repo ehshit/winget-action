@@ -1,6 +1,6 @@
 {
   "name": "winget-action",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "WinGet automation for you if you wanted",
   "main": "dist/index.js",
   "scripts": {
